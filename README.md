@@ -7,15 +7,25 @@ this is a flake which exports some functions to join the spora network
 if you don't use clan or don't want this network as your primary. you can import our zerotier module:
 
 ```nix
-{inputs, ...}: {
-  imports = [
-    inputs.spora.nixosModules.mycelium
-    inputs.spora.nixosModules.hosts
-  ];
+{
+  inputs = {
+    spora.url = "github:krebs/spora";
+    spora.inputs.nixpkgs.follows = "nixpkgs";
+  };
+
+  outputs = { spora, ... } {
+    nixosConfigurations.myHost = nixpkgs.lib.nixosSystem {
+      ...
+      modules = [
+        spora.nixosModules.spora
+      ];
+    }
+  };
 }
 ```
 
 ## Adding host to network
+
 First `git clone` this repository. Then
 for your host to be accepted into the network the id needs to be whitelisted.
 So add your host file to hosts:
